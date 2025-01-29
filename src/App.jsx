@@ -1,20 +1,26 @@
 import {useState, useEffect} from 'react'
 
 export const App = ()=>{
-     const [value, setValue] = useState(0);
-     const [smth, setSmth] = useState(1);
+   const [data, setData] = useState([]);
 
-    useEffect(()=>{
-        if(value>3){
-            console.log('UseEffect hook')
-            document.title = `Increment ${value} and ${smth}`
-        }
-    }, [value,smth])
+   useEffect(()=>{
+       async function getData(){
+           const response = await fetch('https://jsonplaceholder.typicode.com/todos')
+           const data = await response.json()
+           if(data && data.length){
+               setData(data)
+           }
+       }
+       getData()
+   },[])
     return(
-       <div>
-           <h1>{value} {smth} </h1>
-           <button onClick={()=>setValue(value+1)}>Increment</button>
-           <button onClick={()=> setSmth(smth+1)}>Increment</button>
-       </div>
+         <div>
+             <ol>
+                 {data.map((todo)=>{
+                     return <li key={todo.id}>{todo.title}{todo.userId}</li>
+
+                 })}
+             </ol>
+         </div>
     )
 }
